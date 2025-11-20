@@ -1,3 +1,36 @@
+# -------------------------
+# 套件檢查區
+# -------------------------
+missing_packages = []
+
+try:
+    import pyrealsense2 as rs
+except ImportError:
+    missing_packages.append("pyrealsense2")
+
+try:
+    import cv2
+except ImportError:
+    missing_packages.append("opencv-python")
+
+try:
+    import numpy as np
+except ImportError:
+    missing_packages.append("numpy")
+
+# 若有缺少套件，提示使用者安裝
+if missing_packages:
+    print("❌ 缺少必要套件：")
+    for pkg in missing_packages:
+        print(f"   - {pkg}")
+
+    print("\n請使用以下指令安裝：")
+    print("pip install " + " ".join(missing_packages))
+    exit(1)
+
+# ----------------------------------------------------
+# 套件完整 → 開始 RealSense 深度相機
+# ----------------------------------------------------
 import pyrealsense2 as rs
 import numpy as np
 import cv2
@@ -11,6 +44,8 @@ config.enable_stream(rs.stream.depth, 640, 480, rs.format.z16, 30)
 
 # 開始串流
 pipeline.start(config)
+
+print("🎉 D405 深度串流開始！按 ESC 離開。")
 
 try:
     while True:
@@ -47,3 +82,4 @@ try:
 finally:
     pipeline.stop()
     cv2.destroyAllWindows()
+    print("🛑 已停止 RealSense 串流")
